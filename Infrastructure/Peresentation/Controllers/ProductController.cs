@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Abstraction;
 using Microsoft.AspNetCore.Mvc;
+using Shared;
 using Shared.Dto_s;
 
 namespace Peresentation.Controllers
@@ -15,9 +16,9 @@ namespace Peresentation.Controllers
     {
         // GET: api/Product/all
         [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllProducts()
+        public async Task<ActionResult<PaginatedResult<ProductDto>>> GetAllProducts([FromQuery] ProductQueryParams productQuery)
         {
-            var products = await servicesManager.productServices.GetAllProductAsync();
+            var products = await servicesManager.productServices.GetAllProductAsync(productQuery);
             return Ok(products);
         }
 
@@ -41,6 +42,7 @@ namespace Peresentation.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDto>> GetProductById(int id)
         {
+           
             var product = await servicesManager.productServices.GetProductAsync(id);
             return Ok(product);
         }

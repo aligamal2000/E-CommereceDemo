@@ -3,11 +3,15 @@ using System.Reflection;
 using System.Reflection.Metadata;
 using Abstraction;
 using Domain.Contracts;
+using E_Commerece.Web.CustomMiddleware;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Data;
 using Persistence.Repositories;
 using Services;
 using Services.MappingProfiles;
+using Shared.ErrorModels;
+using StackExchange.Redis;
 
 namespace E_Commerece.Web
 {
@@ -33,13 +37,40 @@ namespace E_Commerece.Web
             builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);
 
             builder.Services.AddScoped<IDBInitializer, DBInitializer>();
+            builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+            builder.Services.AddSingleton<IConnectionMultiplexer>((_) =>
+            {
+         
+                return ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnectionString"));
+            });
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var errors = context.ModelState
+                        .Where(m => m.Value.Errors.Any())
+                        .Select(m => new ValidationErrror
+                        {
+                            Field = m.Key,
+                            Errors = m.Value.Errors.Select(e => e.ErrorMessage)
+                        });
+
+                    var response = new ValiadtionErrorToReturn
+                    {
+                        ValidationErrrors = errors
+                    };
+
+                    return new BadRequestObjectResult(response);
+                };
+            });
+
 
 
             var app = builder.Build();
             await InailizeDbAsync(app);
 
             #region MiddleWare -Configure Pipelines
-
+            app.UseMiddleware<CustomExceptionMiddleware>();
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

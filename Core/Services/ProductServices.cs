@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Abstraction;
 using AutoMapper;
 using Domain.Contracts;
+using Domain.Exceptions;
 using Domain.Models.Products;
 using Services.Speifications;
 using Shared;
@@ -49,8 +50,10 @@ namespace Services
         {
             var spec = new ProductWithBrandAndTypeSpecification(id);
             var product = await unitOfWork.GetRepository<Product, int>().GetByIdAsync(spec);
-            var mappedProduct = mapper.Map<Product, ProductDto>(product);
-            return mappedProduct;
+            if(product is null)
+                throw new ProductNotFoundException(id);
+            return mapper.Map<Product, ProductDto>(product);
+
         }
     }
 }

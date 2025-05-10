@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Abstraction;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
 using Shared.Dto_s;
@@ -15,6 +16,7 @@ namespace Peresentation.Controllers
     public class ProductController(IServicesManger servicesManager) : ControllerBase
     {
         // GET: api/Product/all
+        [Authorize]
         [HttpGet("all")]
         public async Task<ActionResult<PaginatedResult<ProductDto>>> GetAllProducts([FromQuery] ProductQueryParams productQuery)
         {
@@ -24,6 +26,7 @@ namespace Peresentation.Controllers
 
         // GET: api/Product/brands
         [HttpGet("brands")]
+        [Authorize(Roles ="SuperAdmin")]
         public async Task<ActionResult<IEnumerable<BrandDto>>> GetAllBrands()
         {
             var brands = await servicesManager.productServices.GetAllBrandsAsync();

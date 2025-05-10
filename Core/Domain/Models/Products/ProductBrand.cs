@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Models.Products
 {
-    public class ProductBrand:ModelBase<int>
+    public class DelvieryMethod:ModelBase<int>
 
     {
         public string Name { get; set; } = null!;

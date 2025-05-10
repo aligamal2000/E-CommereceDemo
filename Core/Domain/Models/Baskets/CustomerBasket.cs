@@ -9,6 +9,6 @@ namespace Domain.Models.Baskets
     public class CustomerBasket
     {
         public string Id { get; set; } = null!;
-        public ICollection<BasketItem> BasketItems { get; set; } = [];
+        public ICollection<BasketItem> Items { get; set; } = [];
     }
 }

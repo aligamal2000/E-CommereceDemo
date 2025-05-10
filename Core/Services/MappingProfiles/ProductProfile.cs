@@ -18,7 +18,7 @@ namespace Services.MappingProfiles
                 .ForMember(dest => dest.TypeName, opt => opt.MapFrom(src => src.Type.Name))
                 .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom<ProductReslover>());
 
-            CreateMap<ProductBrand, BrandDto>();
+            CreateMap<DelvieryMethod, BrandDto>();
             CreateMap<ProductType, TypeDto>();
         }   
 

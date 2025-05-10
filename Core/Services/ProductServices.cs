@@ -18,9 +18,9 @@ namespace Services
     {
         public async Task<IEnumerable<BrandDto>> GetAllBrandsAsync()
         {
-            var repository = unitOfWork.GetRepository<ProductBrand, int>();
+            var repository = unitOfWork.GetRepository<DelvieryMethod, int>();
             var brands = await repository.GetAllAsync();
-            var mappedBrands = mapper.Map<IEnumerable<ProductBrand>, IEnumerable<BrandDto>>(brands);
+            var mappedBrands = mapper.Map<IEnumerable<DelvieryMethod>, IEnumerable<BrandDto>>(brands);
             return mappedBrands;
         }
 
